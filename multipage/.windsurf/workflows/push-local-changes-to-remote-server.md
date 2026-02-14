@@ -1,6 +1,6 @@
 ---
 description: Envía los cambios locales a el servidor remoto de git
-auto_execution_mode: 2
+auto_execution_mode: 3
 ---
 ## Paso 1: Verificar el estado de Git
 

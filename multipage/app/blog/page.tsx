@@ -1,56 +1,41 @@
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { getBlogPosts } from "@/lib/api";
+import { BlogPost } from "@/types/blog";
 
-// Mock data para los posts del blog (mismo array del homepage)
-const blogPosts = [
-  {
-    id: 1,
-    title: "Getting Started with Next.js 15",
-    summary: "Learn how to build modern web applications with the latest Next.js features and App Router. This comprehensive guide covers everything from setup to deployment.",
-    content: "Next.js 15 introduces powerful new features that make building web applications easier than ever..."
-  },
-  {
-    id: 2,
-    title: "TypeScript Best Practices",
-    summary: "Essential TypeScript patterns and practices for writing maintainable code. Discover advanced types and patterns.",
-    content: "TypeScript provides powerful type safety features that can significantly improve code quality..."
-  },
-  {
-    id: 3,
-    title: "Responsive Design with Tailwind CSS",
-    summary: "Create beautiful responsive layouts using Tailwind's utility-first approach. Master mobile-first design.",
-    content: "Tailwind CSS revolutionizes the way we approach styling in web development..."
-  },
-  {
-    id: 4,
-    title: "Modern React Patterns",
-    summary: "Explore contemporary React patterns and hooks for building scalable applications. Learn custom hooks and state management.",
-    content: "React's ecosystem continues to evolve with new patterns that improve developer experience..."
-  },
-  {
-    id: 5,
-    title: "Building RESTful APIs",
-    summary: "Design and implement robust RESTful APIs with Node.js and Express. Best practices for API architecture.",
-    content: "Creating well-designed APIs is crucial for building scalable web applications..."
-  },
-  {
-    id: 6,
-    title: "Database Design Fundamentals",
-    summary: "Learn the principles of good database design and normalization. SQL and NoSQL comparison.",
-    content: "Understanding database design is essential for building data-driven applications..."
-  },
-  {
-    id: 7,
-    title: "Testing Strategies for Web Apps",
-    summary: "Comprehensive testing approaches including unit, integration, and E2E testing with modern tools.",
-    content: "Testing is a critical part of the development process that ensures code quality..."
+export default async function Blog() {
+  // Obtener posts desde el API de Bun
+  const postsResponse = await getBlogPosts();
+  const blogPosts = postsResponse.success ? postsResponse.data : [];
+
+  // Si no hay posts, mostrar mensaje
+  if (blogPosts.length === 0) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-grow">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div className="text-center">
+              <h1 className="text-3xl font-bold text-gray-900 mb-4">
+                Blog
+              </h1>
+              <p className="text-gray-600">
+                {postsResponse.success 
+                  ? "No hay posts disponibles en este momento." 
+                  : "No se pudieron cargar los posts. Por favor, intenta más tarde."
+                }
+              </p>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
   }
-];
 
-export default function Blog() {
   const featuredPost = blogPosts[0];
-  const gridPosts = blogPosts.slice(1, 7);
+  const gridPosts = blogPosts.slice(1); // Mostrar todos los posts restantes
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -86,11 +71,12 @@ export default function Blog() {
           </div>
         </section>
 
-        {/* Grid Section - 6 Posts */}
+        {/* Grid Section - All Posts */}
         <section className="py-16 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-8">Todos los Cursos</h2>
             <div className="lg:grid lg:grid-cols-2 lg:gap-8">
-              {gridPosts.map((post) => (
+              {gridPosts.map((post: BlogPost) => (
                 <article key={post.id} className="mb-8 lg:mb-0">
                   <div className="bg-gray-50 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300">
                     <div className="p-6">
